@@ -1,0 +1,11 @@
+entryGroupConfigMap:
+  atm:
+    DEPOSIT_CHECK:
+      accountNumberGeneration:
+        buckets: 256
+        prefix: 1122
+        identifiers: [tx.userId]
+      accountSource: generated
+      matchingRules:
+        classification: [3, 4, 5]
+      postingPriority: 4

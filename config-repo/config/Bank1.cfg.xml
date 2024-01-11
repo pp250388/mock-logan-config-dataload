@@ -1,0 +1,267 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<preferences EXTERNAL_XML_VERSION='1.0' segment="OmniChannel">
+	<includes>
+		<!-- include any other stores here -->
+		<!-- this sample is commented out <store resourceName='AnotherStore.cfg.xml' 
+			/> -->
+		<store resourceName='Reports.cfg.xml' />
+		<store resourceName='Endorsements.cfg.xml' />
+		<store resourceName='VirtualItemDetails.cfg.xml' />
+		<store resourceName='DocumentIdentification.cfg.xml' />
+		<store resourceName='NonCaptureItemDetails.cfg.xml' />
+		<store resourceName='ImageAssessmentFED.cfg.xml' />
+		<store resourceName='AuditLog.cfg.xml' />
+		<store resourceName='LowInkDetect.cfg.xml' />
+		<store resourceName='PassportCommercial.cfg.xml' />
+		<store resourceName='DynamicPresentment.cfg.xml' />
+		<store resourceName='CSDataLoad.cfg.xml' />
+		<store resourceName='CSReceive.cfg.xml' />
+		<store resourceName='WebBankingInterface.cfg.xml' />
+		<store resourceName='AutoEnrollTemplate.cfg.xml' />
+		<store resourceName='PassportIntegration.cfg.xml' />
+		<store resourceName='PerformanceMonitor.cfg.xml' />
+	</includes>
+	<CustomerName>${customer.name}</CustomerName>
+	<!-- the root must be type system or user ... we're only using system -->
+	<root type='system'>
+		<!-- <entry key='EnableSegmentCategory1' value='true' /> -->
+		<map>
+	   	<entry key='AllowSequentialDepositSlip' value='true' />
+	   	
+	   	<!-- When set to "true" in environments where the AllowSequentialDepositSlip parameter is also set to "true",
+	   		 overrides all configured Sequential deposit slips account settings and permits sequential deposit slips 
+	   		 for all accounts.
+	   		 
+	   		 When set to "false", sequential deposit slips will only be allowed for accounts where the Sequential 
+	   		 deposit slips check box has been selected. 
+	   	 -->      
+        <entry key='AlwaysAllowSequentialDepositSlips' value='true' />
+			<entry key='InstallDirectory'
+				value='/usr/local/bin' />
+			<entry key='PureJava' value='true' />
+			<entry key='EnableUserLevelBackEndStore' value='${enable.userlevel.backend.store:maybe}' />
+		</map>
+		<!-- This node is for the base objects in CPWE -->
+		<node name='Hibernate'>
+			<map>
+				<entry key='ConfigFileName' value='/${hibernate.cfg.filename}' />
+				<entry key='Interceptor'
+					value='com.ncr.passport.persist.hibernate.AuditInterceptor' />
+				<!-- if the audit table is part of pcommweb, be true, otherwise false -->
+				<entry key='CPWEAudit' value='true' />
+			</map>
+			<node name="Configuration_1">
+				<entry key='ConfigClass' value='com.ncr.passport.persist.hibernate.Configuration' />
+			</node>
+			<!-- If audits are part of the pcommweb db, then include the audit configuration, 
+				otherwise leave to AuditHibernate node 
+			<node name="Configuration_2">
+				<entry key='ConfigClass'
+					value='com.ncr.passport.audit.persist.hibernate.Configuration' />
+			</node-->
+			<node name='Configuration_3'>
+				<entry key='ConfigClass'
+					value='com.ncr.passport.log.persist.hibernate.Configuration' />
+			</node>
+		</node>
+		<node name='AuditHibernate'>
+			<map>
+				<entry key='ConfigFileName' value='/hibernate.audit.cfg.xml' />
+			</map>
+		</node>
+		<!-- This node is for the ExceptionLog object in CPWE, to be used when 
+			the ExceptionLog inserts need -->
+		<!-- to be done as a separate transaction (i.e. on it's own database) -->
+		<node name='ExceptionLogHibernate'>
+			<map>
+				<entry key='ConfigFileName' value='/hibernate.cfg.xml' />
+			</map>
+			<node name='Configuration_1'>
+				<entry key='ConfigClass'
+					value='com.ncr.passport.log.persist.hibernate.Configuration' />
+			</node>
+		</node>
+		<node name='Help'>
+			<map>
+				<entry key='ShowTips' value='true' />
+			</map>
+		</node>
+		<!-- Each "application" can have its own node -->
+		<node name='DepositCompletion'>
+			<map>
+				<entry key='BlockMultipleBrowserTabs' value='false' />
+				<entry key='BalanceExpectedAmount' value='false' />
+				<entry key='EnableLocationTypes' value='false' />
+				<entry key='CompletionServerUrl' value='http://${DOCKER_MACHINE_IP}:8080/CPWECompletion' />
+				<entry key='CaptureServerUrl'
+					value='http://${DOCKER_MACHINE_IP}:8080/CPWECapture/DepositCaptureDispatcher' />
+				<entry key='HostName' value='Waterloo' />
+				<entry key='BankName' value='OmniBank' />
+				<entry key='AllowPaperDepositSlip' value='false' />
+				<entry key='AllowAllPaperCreditItems' value='true' />
+				<entry key='AllowDuplicateErrorOverride' value='true' />
+				<entry key='AllowImageQualityErrorOverride' value='true' />
+				<entry key='UseDepositAndWorkTypeCombination' value='true' />
+				<entry key='SecondFactorAuthenticationEnabled' value='false' />
+				<entry key='EnableDepositTransactionReversal' value='true' />
+				<entry key='WorkstationDriverUrlArray'
+					value='{ "driverUrls" : [ { "driverUrl" : "https://127.0.0.1:443/pptcdrvr" }, { "driverUrl" : "https://127.0.0.1:8443/pptcdrvr" }, { "driverUrl" : "https://127.0.0.1:9043/pptcdrvr" }, { "driverUrl" : "https://127.0.0.1:9443/pptcdrvr" }, { "driverUrl" : "https://127.0.0.1:12443/pptcdrvr" },{ "driverUrl" : "http://127.0.0.1:80/pptcdrvr" },{ "driverUrl" : "http://127.0.0.1:8080/pptcdrvr" }, { "driverUrl" : "http://127.0.0.1:9080/pptcdrvr" }  ] }' />
+				<entry key='CheckDriverWithoutContactingDriver' value='false' />
+				<entry key='CheckDriverUsingAJAX' value='false' />
+			</map>
+
+			<!-- Specifies the allowed deposit and worktype combinations that are 
+				allowed in the system. Requires: 'EnableDepositTypePreferencesOverrides' 
+				and 'UseDepositAndWorkTypeCombination'. -->
+			<node name='SystemAllowedDepositAndWorkTypes'>
+				<map>
+					<entry key='01_SimpleCash' value='SIMPLE-Cash' />
+					<entry key='02_SimpleCheck' value='SIMPLE-Check' />
+					<entry key='03_SimpleCashWithdrawal' value='SIMPLE-CashWithdrawal' />
+					<entry key='04_SimpleCheckAndCash' value='SIMPLE-CheckAndCash' />
+					<entry key='05_SimpleCheckCashBack' value='SIMPLE-CheckCashBack' />
+					<entry key='06_SimpleBusinessCheck' value='SIMPLE-BusinessCheck' />
+					<entry key='07_SimpleBusinessCheckAndCash' value='SIMPLE-BusinessCheckAndCash' />
+					<entry key='08_SimpleDeclaredValue' value='SIMPLE-DeclaredValue' />
+					<entry key='09_SimpleCashPurchase' value='SIMPLE-CashPurchase' />
+					<entry key='10_SimpleMobileCommercialDeposit' value='SIMPLE-MobileCommercialDeposit' />
+					<entry key='11_SimpleAccountTransfer' value='SIMPLE-AccountTransfer' />
+					<entry key='12_SimpleAccountTransferTo' value='SIMPLE-AccountTransferTo' />
+					<entry key='13_SimpleAccountTransferFrom' value='SIMPLE-AccountTransferFrom' />
+					<entry key='14_SimpleATMDeposit' value='SIMPLE-ATMDeposit' />
+				</map>
+			</node>
+		</node>
+		<node name='RecognitionServer'>
+			<map>
+				<entry key='IgnoreImageQuality' value='false' />
+				<entry key='IgnoreMICRParsing' value='false' />
+				<entry key='IgnoreCar' value='false' />
+				<entry key='IgnoreDuplicateTesting' value='true' />
+				<entry key='IgnoreFieldValidation' value='false' />
+				<entry key='DuplicateByLocation' value='true' />
+				<entry key='DuplicateRetentionDays' value='7' />
+				<entry key='MICRSWOCRCheckRequired' value='false' />
+				<entry key='MICRSWOCRMismatchPassThrough' value='false' />
+				<entry key='MaximumCodeLineRejectsThreshold' value='4' />
+				<entry key='MinimumLevenshteinThreshold' value='7' />
+				<entry key='DoBestRead' value='true'/>
+			</map>
+		</node>
+		<node name='SharedComponents'>
+			<map>
+				<!-- Replace "localhost" with either a DNS name or an IP address of the 
+					system noted -->
+				<entry key='RulesWebServiceURL'
+					value='http://${WINDOWS_SERVER_IP}:80/CPWERecognition/services/rulesrequest/RuleRequestService' />
+				<!-- Server hosting recognition or Image Analytics machine -->
+				<entry key='DataPerfectionAdjustmentCodes' value='' />
+				<!-- comma separated list of return codes to process and display in Deposit 
+					Items List window. List names configured in showdeposits.properties. -->
+				<entry key='ZoneValueWebServiceURL'
+					value='http://${WINDOWS_SERVER_IP}:80/CPWERecognition/services/zonevaluerequest/ZoneValueRequestService' />
+				<entry key='ExternalValidationServiceURL' value=''/>
+			</map>
+		</node>
+
+		<!-- This is the node used to store all the queue information -->
+		<node name='Queue'>
+			<!-- The following are example settings for Queue values using GlassFish: 
+				<entry key='ContextFactory' value='com.sun.enterprise.naming.SerialInitContextFactory' 
+				/> <entry key='ConnectionFactory' value='jms/CPWEConnectionFactory' /> <entry 
+				key='ProviderURL' value='jnp://localhost:1099' /> -->
+			<!-- The following are example settings for Queue values using JBOSS: 
+				<entry key='ContextFactory' value='org.jnp.interfaces.NamingContextFactory' 
+				/> <entry key='ConnectionFactory' value='java:/JmsXA' /> <entry key='ProviderURL' 
+				value='jnp://localhost:1099' /> -->
+			<!-- The following are example settings for Queue values using WebSphere: 
+				<entry key='ContextFactory' value='com.ibm.websphere.naming.WsnInitialContextFactory' 
+				/> <entry key='ConnectionFactory' value='jms/CPWEConnectionFactory' /> <entry 
+				key='ProviderURL' value='iiop://localhost:2809/' /> -->
+
+			<map>
+				<entry key='ContextFactory' value='com.sun.enterprise.naming.SerialInitContextFactory' />
+				<entry key='ConnectionFactory' value='jms/CPWEConnectionFactory' />
+				<entry key='ProviderURL' value='jnp://localhost:1099' />
+				<entry key='QueueUserId' value='pcweusr1' />
+				<entry key='QueuePassword' value='pcwepwd' />
+				<entry key='RulesRQQueueName' value='java:comp/env/queue/CPWERulesQueue' />
+				<entry key='CSDepositTransferQueueName' value='java:comp/env/queue/CPWEReceiveQueue' />
+				<entry key='ReportInstanceQueueName' value='java:comp/env/queue/CPWEReportQueue' />
+				<entry key='ReportInstanceScheduledQueueName' value='java:comp/env/queue/CPWEReportScheduledQueue' />
+			</map>
+		</node>
+		<!-- The following should have the port changed to 8082 if JBoss or GlassFish 
+			is being used. 9092 is for WebSphere. -->
+		<node name='MBeanMapping'>
+			<map>
+				<entry key='HTMLAdaptorMBeanObjectName' value='HTMLAdaptor:type=htmladaptor,port=8082' />
+				<!-- Name of the HTML Adapter -->
+				<entry key='HTMLAdapterPortNumber' value='8082' />
+				<!-- Port Number to display the MBeans on -->
+				<entry key='HTMLAdapterThreshHold' value='3' />
+				<!-- Threshold for performance in seconds -->
+				<entry key='UserID' value='admin' />
+				<!-- Optional parameter to secure the MBean adaptor. If blank no authentication -->
+				<entry key='Password' value='' />
+				<!-- Optional parameter to secure the MBean adaptor. If blank no authentication -->
+			</map>
+		</node>
+		<!-- The following lists MBeans that by default are enabled rather than 
+			disabled -->
+		<node name='MBeanMapping'>
+			<map>
+				<entry key='com.ncr.passport.report.service.ReportServiceStatistics'
+					value='true' />
+			</map>
+		</node>
+		<!-- The following must be changed for the CSReceive application and were 
+			originally in Bank1.CSReceive.cfg.xml -->
+		<node name='CSDestinations'>
+			<map>
+				<entry key='DefaultServer' value='HostNameCSDestinationServer' />
+				<entry key='DefaultPort' value='8080'></entry>
+			</map>
+			<!-- Example Destination Rule <node name='EasternTimeZone'> <map> <entry 
+				key='ValuePattern' value='User1' /> <entry key='MatchValue' value='America/New_York'/> 
+				<entry key='Server' value='someplace.com' /> <entry key='Port' value='9085'/> 
+				</map> </node> -->
+		</node>
+		<node name='CSController'>
+			<map>
+				<entry key='UseHTTPS' value='false'></entry>
+
+				<!-- HTTPS SSL Related properties: Mode of SSL over https (default to 
+					none, if not specified). ONE-OF { none, anon } where: none : disable SSL 
+					(use http) anon : anonymous mode, no client-side or server-side authentication -->
+				<entry key='ssl.https.mode' value='none' />
+
+				<!-- See ssl.provider.<provider-name> namespace. NOTE :: default provider 
+					is iaik. -->
+				<entry key='ssl.https.provide' value='iaik' />
+			</map>
+		</node>
+
+		<node name='DepositCapture'>
+			<map>
+				<!-- If the driver install files are not included in the Completion EAR 
+					file, location they can be obtained from on the file system i.e. /temp/ -->
+				<entry key='DriverDownloadLocation' value='' />
+			</map>
+		</node>
+        <node name='Mitek'>
+			<map>
+				<entry key="ServiceImplementationClass" value="com.ncr.passport.mitek.services.impl.MitekWebServiceWrapperImpl" />
+				<entry key="PhoneVendorWebServiceURL" value="http://0.0.0.0/mobileDeposit/PhoneVendorservice.asmx" />
+				<entry key="MaxRetryCount" value="5"/>
+				<entry key="RetryInterval" value="1000" />
+				<entry key="OrgAdminUserName" value="OrgAdminNCR" />
+				<entry key="OrgAdminUserPassword" value="SntcHpH.X79wZt0wV7I6_w--" /> 
+				<entry key="ImageResults" value="BinaryFront,BinaryBack,GrayscaleFront,GrayscaleBack" />
+				<entry key="DefaultAmount" value="100"/>
+				<entry key="DefaultDeviceType" value="iphone"/>
+			</map>
+	    </node>
+
+	</root>
+</preferences>

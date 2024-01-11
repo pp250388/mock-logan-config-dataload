@@ -1,0 +1,4 @@
+entryGroupConfigMap:
+  atm:
+    DEPOSIT_CHECK:
+      accountBankNumber: 300
